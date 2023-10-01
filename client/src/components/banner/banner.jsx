@@ -1,5 +1,5 @@
 import React from "react";
-import { HashLink as Link } from "react-router-hash-link";
+import { Link } from "react-router-dom";
 import { Container, Row, Col } from "reactstrap";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import LoginForm from "../../views/components/sections/login";
@@ -27,17 +27,16 @@ const HeaderBanner = () => {
               Your Path to Mental Wellness: Where AI Meets Empathy
             </h4>
 
-            <button
-              onClick={HeaderBanner}
-              className="btn btn-outline-light m-r-20 btn-md m-t-30 font-14"
-            >
-              Login
-            </button>
-
-            <Link to="" className="btn btn-md m-t-30 btn-info-gradiant font-14">
-              Sign Up
+            <Link to="/login">
+              <button className="btn btn-outline-light m-r-20 btn-md m-t-30 font-14">
+                Login
+              </button>
             </Link>
-
+            <Link to="/register">
+              <button className="btn btn-md m-t-30 btn-info-gradiant font-14">
+                Sign Up
+              </button>
+            </Link>
             {/* <Link to="/#coming" className="btn btn-md m-t-30 btn-info-gradiant font-14">Upgrade To Pro</Link> */}
           </Col>
         </Row>

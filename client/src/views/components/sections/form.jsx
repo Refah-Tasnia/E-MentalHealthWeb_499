@@ -9,6 +9,7 @@ import {
   Input,
   Button,
 } from "reactstrap";
+import { Link } from "react-router-dom";
 
 const PageForm = () => {
   return (
@@ -29,41 +30,12 @@ const PageForm = () => {
           <Col md="12">
             <Form className="row">
               <FormGroup className="col-md-6">
-                <Label htmlFor="name">First Name</Label>
+                <Label htmlFor="name">Name</Label>
                 <Input
                   type="text"
                   className="form-control"
                   id="name"
-                  placeholder="Enter First Name"
-                />
-              </FormGroup>
-              <FormGroup className="col-md-6">
-                <Label htmlFor="name">Last Name</Label>
-                <Input
-                  type="text"
-                  className="form-control"
-                  id="name"
-                  placeholder="Enter Surname"
-                />
-              </FormGroup>
-
-              <FormGroup className="col-md-6">
-                <Label htmlFor="name">Age</Label>
-                <Input
-                  type="text"
-                  className="form-control"
-                  id="name"
-                  placeholder="Your age"
-                />
-              </FormGroup>
-
-              <FormGroup className="col-md-6">
-                <Label htmlFor="name">Date of Birth</Label>
-                <Input
-                  type="text"
-                  className="form-control"
-                  id="name"
-                  placeholder="Enter your Date of birth"
+                  placeholder="Enter Your Name"
                 />
               </FormGroup>
 
@@ -102,12 +74,14 @@ const PageForm = () => {
                 >
                   Submit
                 </Button>
-                <Button
-                  type="submit"
-                  className="btn btn-inverse waves-effect waves-light"
-                >
-                  Cancel
-                </Button>
+                <Link to="/">
+                  <Button
+                    type="submit"
+                    className="btn btn-inverse waves-effect waves-light"
+                  >
+                    Back
+                  </Button>
+                </Link>
               </Col>
             </Form>
           </Col>

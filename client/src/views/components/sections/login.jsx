@@ -1,4 +1,5 @@
-import React from "react";
+import { React, useState } from "react";
+import axios from "axios";
 import {
   Container,
   Row,
@@ -9,8 +10,32 @@ import {
   Input,
   Button,
 } from "reactstrap";
+import { Link } from "react-router-dom";
 
-const LoginForm = () => {
+export default function LoginForm() {
+  const [userName, setInitial] = useState("");
+  const [password, setPassword] = useState("");
+  function userLogin() {
+    if (userName === "" || password === "") {
+      alert("Please Enter username and password");
+    } else {
+      axios
+        .post("localhost:3000/getUser", {
+          facultyInitial: userName,
+          password,
+        })
+        .then((response) => {
+          console.log(response.data);
+          if (response.data["loginMessage"] === true) {
+            navigation.navigate("ProfileScreen", {
+              facultyInitial: userName,
+            });
+          }
+        })
+        .catch((error) => alert("Wrong username or password"));
+    }
+  }
+
   return (
     <div>
       <div className="spacer" id="logForm">
@@ -51,17 +76,20 @@ const LoginForm = () => {
               </FormGroup>
               <Col md="12">
                 <Button
+                  onClick={userLogin}
                   type="submit"
                   className="btn btn-success waves-effect waves-light m-r-10"
                 >
                   Submit
                 </Button>
-                <Button
-                  type="submit"
-                  className="btn btn-inverse waves-effect waves-light"
-                >
-                  Cancel
-                </Button>
+                <Link to="/">
+                  <Button
+                    type="submit"
+                    className="btn btn-inverse waves-effect waves-light"
+                  >
+                    Back
+                  </Button>
+                </Link>
               </Col>
             </Form>
           </Col>
@@ -69,6 +97,4 @@ const LoginForm = () => {
       </Container>
     </div>
   );
-};
-
-export default LoginForm;
+}

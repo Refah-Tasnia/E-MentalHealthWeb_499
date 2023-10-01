@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 // core components
 import Header from "../../components/header/header.jsx";
 import HeaderBanner from "../../components/banner/banner.jsx";
+import Footer from "../../components/footer/footer.jsx";
 
 const Landing = () => {
   return (
@@ -14,6 +15,7 @@ const Landing = () => {
           <HeaderBanner />
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
