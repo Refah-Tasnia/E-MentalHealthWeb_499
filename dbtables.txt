@@ -1,0 +1,63 @@
+CREATE TABLE User (
+    userID INT PRIMARY KEY AUTO_INCREMENT,
+    userName VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    userPass VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Psychologist (
+    psyID INT PRIMARY KEY AUTO_INCREMENT,
+    psyName VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    psyPass VARCHAR(255) NOT NULL,
+    phone VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Assessment (
+    AssessmentID INT PRIMARY KEY AUTO_INCREMENT,
+    userID INT NOT NULL,
+    assessmentData TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userID) REFERENCES User(userID)
+);
+
+CREATE TABLE BlogPost (
+    postID INT PRIMARY KEY AUTO_INCREMENT,
+    userID INT NOT NULL,
+    content TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userID) REFERENCES User(userID)
+);
+
+CREATE TABLE Comments (
+    commentID INT PRIMARY KEY AUTO_INCREMENT,
+    userID INT NOT NULL,
+    postID INT NOT NULL,
+    content TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userID) REFERENCES User(userID),
+    FOREIGN KEY (postID) REFERENCES BlogPost(postID)
+);
+
+CREATE TABLE VideoConferences (
+    conferenceID INT PRIMARY KEY AUTO_INCREMENT,
+    userID INT NOT NULL,
+    psyID INT NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userID) REFERENCES User(userID),
+    FOREIGN KEY (psyID) REFERENCES Psychologist(psyID)
+);
+
+CREATE TABLE EmotionDetectionResults (
+    ResultID INT PRIMARY KEY AUTO_INCREMENT,
+    ConferenceID INT NOT NULL,
+    EmotionData TEXT,
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ConferenceID) REFERENCES VideoConferences(conferenceID)
+);
+
+CREATE TABLE Admin (
+    adminID INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL,
+    adminPass VARCHAR(255) NOT NULL
+);
