@@ -16,6 +16,7 @@ import {
   NavbarToggler,
   Collapse,
 } from "reactstrap";
+import { Link } from "react-router-dom";
 
 import img1 from "../../../assets/images/ui/img6.jpg";
 import img2 from "../../../assets/images/ui/5.jpg";
@@ -52,7 +53,10 @@ const Home = () => {
         <Container>
           <Navbar className="navbar-expand-lg h1-nav">
             <NavbarBrand href="#">
-              <img src={logo} alt="wrapkit" />
+              <img
+                src={"./src/assets/images/logos/mental-health.png"}
+                alt="wrapkit"
+              />
             </NavbarBrand>
             <NavbarToggler onClick={toggle}>
               <span className="ti-menu"></span>
@@ -62,9 +66,11 @@ const Home = () => {
                 <NavItem className="active">
                   <NavLink href="#">Profile</NavLink>
                 </NavItem>
+
                 <NavItem>
-                  <NavLink href="#">Blog</NavLink>
+                  <NavLink href="/blog">Blog</NavLink>
                 </NavItem>
+
                 <NavItem>
                   <NavLink href="#">Chatbot</NavLink>
                 </NavItem>
@@ -84,12 +90,13 @@ const Home = () => {
                     <DropdownItem>One more separated link</DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
-
-                <NavItem>
-                  <a className="btn btn-outline-success" href="#">
-                    Logout
-                  </a>
-                </NavItem>
+                <Link to="/">
+                  <NavItem>
+                    <a className="btn btn-outline-success" href="#">
+                      Logout
+                    </a>
+                  </NavItem>
+                </Link>
               </Nav>
             </Collapse>
           </Navbar>

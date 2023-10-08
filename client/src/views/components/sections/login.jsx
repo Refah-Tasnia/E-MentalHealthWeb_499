@@ -13,26 +13,26 @@ import {
 import { Link } from "react-router-dom";
 
 export default function LoginForm() {
-  const [userName, setInitial] = useState("");
+  const [userEmail, setEmail] = useState("");
   const [password, setPassword] = useState("");
   function userLogin() {
-    if (userName === "" || password === "") {
-      alert("Please Enter username and password");
+    if (userEmail === "" || password === "") {
+      alert("Please Enter userEmail and password");
     } else {
       axios
-        .post("localhost:3000/getUser", {
-          facultyInitial: userName,
-          password,
+        .post("localhost:3001/getUser", {
+          userEmail: email,
+          password: userPass,
         })
         .then((response) => {
           console.log(response.data);
           if (response.data["loginMessage"] === true) {
             navigation.navigate("ProfileScreen", {
-              facultyInitial: userName,
+              facultyInitial: userEmail,
             });
           }
         })
-        .catch((error) => alert("Wrong username or password"));
+        .catch((error) => alert("Wrong email or password"));
     }
   }
 
@@ -52,17 +52,19 @@ export default function LoginForm() {
           <Col md="12">
             <Form className="row">
               <FormGroup className="col-md-6">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">Email Address or Phone Number</Label>
                 <Input
+                  onChangeCapture={setEmail}
                   type="email"
                   className="form-control"
-                  id="email"
-                  placeholder="Enter email"
+                  id="userEmail"
+                  placeholder="Enter email or Phone"
                 />
               </FormGroup>
               <FormGroup className="col-md-6">
                 <Label htmlFor="password">Password</Label>
                 <Input
+                  onChangeCapture={setPassword}
                   type="password"
                   className="form-control"
                   id="password"
@@ -75,13 +77,14 @@ export default function LoginForm() {
                 <Label htmlFor="checkbox1"> Remember me </Label>
               </FormGroup>
               <Col md="12">
-                <Button
-                  onClick={userLogin}
-                  type="submit"
-                  className="btn btn-success waves-effect waves-light m-r-10"
-                >
-                  Submit
-                </Button>
+                <Link to="/homepage">
+                  <Button
+                    type="submit"
+                    className="btn btn-success waves-effect waves-light m-r-10"
+                  >
+                    Submit
+                  </Button>
+                </Link>
                 <Link to="/">
                   <Button
                     type="submit"

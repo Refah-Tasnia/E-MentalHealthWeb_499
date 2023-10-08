@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Container,
   Row,
@@ -10,8 +10,21 @@ import {
   Button,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
-const PageForm = () => {
+const Register = () => {
+  const [values, setValues] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    axios
+      .post("http://localhost:3001/register", values)
+      .then((res) => console.log(res))
+      .then((err) => console.log(err));
+  };
   return (
     <div>
       <div className="spacer" id="forms-component">
@@ -36,6 +49,9 @@ const PageForm = () => {
                   className="form-control"
                   id="name"
                   placeholder="Enter Your Name"
+                  onChange={(e) =>
+                    setValues({ ...values, name: e.target.value })
+                  }
                 />
               </FormGroup>
 
@@ -46,6 +62,9 @@ const PageForm = () => {
                   className="form-control"
                   id="email"
                   placeholder="Enter email"
+                  onChange={(e) =>
+                    setValues({ ...values, email: e.target.value })
+                  }
                 />
               </FormGroup>
               <FormGroup className="col-md-6">
@@ -55,6 +74,9 @@ const PageForm = () => {
                   className="form-control"
                   id="password"
                   placeholder="Password"
+                  onChange={(e) =>
+                    setValues({ ...values, password: e.target.value })
+                  }
                 />
               </FormGroup>
               <FormGroup className="col-md-6">
@@ -68,12 +90,14 @@ const PageForm = () => {
               </FormGroup>
 
               <Col md="12">
-                <Button
-                  type="submit"
-                  className="btn btn-success waves-effect waves-light m-r-10"
-                >
-                  Submit
-                </Button>
+                <Link to="/homepage">
+                  <Button
+                    type="submit"
+                    className="btn btn-success waves-effect waves-light m-r-10"
+                  >
+                    Submit
+                  </Button>
+                </Link>
                 <Link to="/">
                   <Button
                     type="submit"
@@ -91,4 +115,4 @@ const PageForm = () => {
   );
 };
 
-export default PageForm;
+export default Register;
