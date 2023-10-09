@@ -1,63 +1,63 @@
-CREATE TABLE User (
-    userID INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE Users (
+    userID INT AUTO_INCREMENT NOT NULL,
     userName VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    userPass VARCHAR(255) NOT NULL
+userPass VARCHAR(255) NOT NULL,
+phone INT NOT NULL,
+PRIMARY KEY(userID, email, phone)
+   
 );
-
-CREATE TABLE Psychologist (
+CREATE TABLE Psychologists (
     psyID INT PRIMARY KEY AUTO_INCREMENT,
     psyName VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    psyPass VARCHAR(255) NOT NULL,
-    phone VARCHAR(255) NOT NULL
-);
+    psyPass VARCHAR(255) NOT NULL
 
-CREATE TABLE Assessment (
+);
+CREATE TABLE Assessments (
     AssessmentID INT PRIMARY KEY AUTO_INCREMENT,
     userID INT NOT NULL,
-    assessmentData TEXT,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (userID) REFERENCES User(userID)
+    AssessmentData TEXT,
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userID) REFERENCES Users(userID)
 );
-
-CREATE TABLE BlogPost (
-    postID INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE BlogPosts (
+    PostID INT PRIMARY KEY AUTO_INCREMENT,
     userID INT NOT NULL,
-    content TEXT,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (userID) REFERENCES User(userID)
+    Content TEXT,
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userID) REFERENCES Users(userID)
 );
-
 CREATE TABLE Comments (
     commentID INT PRIMARY KEY AUTO_INCREMENT,
     userID INT NOT NULL,
     postID INT NOT NULL,
     content TEXT,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (userID) REFERENCES User(userID),
-    FOREIGN KEY (postID) REFERENCES BlogPost(postID)
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userID) REFERENCES Users(userID),
+    FOREIGN KEY (postID) REFERENCES BlogPosts(postID)
 );
-
 CREATE TABLE VideoConferences (
-    conferenceID INT PRIMARY KEY AUTO_INCREMENT,
+    ConferenceID INT PRIMARY KEY AUTO_INCREMENT,
     userID INT NOT NULL,
     psyID INT NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (userID) REFERENCES User(userID),
-    FOREIGN KEY (psyID) REFERENCES Psychologist(psyID)
-);
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
+    FOREIGN KEY (userID) REFERENCES Users(userID),
+    FOREIGN KEY (psyID) REFERENCES Psychologists(psyID)
+);
 CREATE TABLE EmotionDetectionResults (
     ResultID INT PRIMARY KEY AUTO_INCREMENT,
     ConferenceID INT NOT NULL,
     EmotionData TEXT,
     Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (ConferenceID) REFERENCES VideoConferences(conferenceID)
+    FOREIGN KEY (ConferenceID) REFERENCES VideoConferences(ConferenceID)
 );
-
-CREATE TABLE Admin (
-    adminID INT PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(255) NOT NULL,
-    adminPass VARCHAR(255) NOT NULL
+CREATE TABLE AdminLogs (
+    LogID INT PRIMARY KEY AUTO_INCREMENT,
+    AdminID INT NOT NULL,
+    ActionType VARCHAR(255) NOT NULL,
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  
+    FOREIGN KEY (AdminID) REFERENCES Users(userID)
 );
