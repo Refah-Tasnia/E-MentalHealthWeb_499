@@ -94,31 +94,16 @@ const HeaderBanner = () => {
           <div style={{ height: "35vh" }}></div>
           <Nav className="ml-auto">
             <Link to="/" className="nav-link" style={navLinkStyle}>
-              Home
+              Contact
             </Link>
-            <Nav>
-              <UncontrolledDropdown nav inNavbar style={navLinkStyle}>
-                <DropdownToggle nav className="fa fa-angle-down m-l-5">
-                  Psychiatrist services
-                </DropdownToggle>
-
-                <DropdownMenu className="b-none animated fadeInUp">
-                  <DropdownItem>Action</DropdownItem>
-                  <DropdownItem>Another action</DropdownItem>
-                  <DropdownItem>Something else here</DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem>Something else here</DropdownItem>
-                  <DropdownItem>Separated link</DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem>One more separated link</DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
+            <Nav className="nav-link" style={navLinkStyle}>
+              Psychiatrist Services
             </Nav>
-            <Link to="/chatbot" className="nav-link" style={navLinkStyle}>
+            <Link to="#" className="nav-link" style={navLinkStyle}>
               Chatbot
             </Link>
-            <Link to="/Assesment" className="nav-link" style={navLinkStyle}>
-              Assesment
+            <Link to="#" className="nav-link" style={navLinkStyle}>
+              Blog Post
             </Link>
           </Nav>
         </Navbar>
@@ -193,12 +178,6 @@ const HeaderBanner = () => {
             <h2 className="title" style={sectionTitleStyle}>
               What We Offer
             </h2>
-            <p className="subtitle" style={sectionSubtitleStyle}>
-              E-mental Health is a team of dedicated professionals to make
-              mental health support easily accessible to all. Our experts bring
-              a wealth of experience and a commitment to providing confidential,
-              evidence-based care.
-            </p>
 
             <h3 className="mission-point" style={missionPointStyle}>
               Psychological Support:
@@ -252,3 +231,22 @@ const HeaderBanner = () => {
 };
 
 export default HeaderBanner;
+/*
+
+<UncontrolledDropdown nav inNavbar style={navLinkStyle}>
+                <DropdownToggle nav className="fa fa-angle-down m-l-5">
+                  Psychiatrist services
+                </DropdownToggle>
+
+                <DropdownMenu className="b-none animated fadeInUp">
+                  <DropdownItem>Action</DropdownItem>
+                  <DropdownItem>Another action</DropdownItem>
+                  <DropdownItem>Something else here</DropdownItem>
+                  <DropdownItem divider />
+                  <DropdownItem>Something else here</DropdownItem>
+                  <DropdownItem>Separated link</DropdownItem>
+                  <DropdownItem divider />
+                  <DropdownItem>One more separated link</DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+*/

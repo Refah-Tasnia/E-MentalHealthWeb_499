@@ -9,7 +9,7 @@ import {
   Input,
   Button,
 } from "reactstrap";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Register = () => {
@@ -17,14 +17,23 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
+    phone: "",
   });
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
       .post("http://localhost:3001/register", values)
-      .then((res) => console.log(res))
+      .then((res) => {
+        if (res.data.Status === "Success") {
+          navigate("/login");
+        } else {
+          alert("Error");
+        }
+      })
       .then((err) => console.log(err));
   };
+
   return (
     <div>
       <div className="spacer" id="forms-component">
@@ -41,7 +50,7 @@ const Register = () => {
       <Container>
         <Row>
           <Col md="12">
-            <Form className="row">
+            <Form className="row" onSubmit={handleSubmit}>
               <FormGroup className="col-md-6">
                 <Label htmlFor="name">Name</Label>
                 <Input
@@ -68,6 +77,17 @@ const Register = () => {
                 />
               </FormGroup>
               <FormGroup className="col-md-6">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  className="form-control"
+                  id="phone"
+                  placeholder="Enter your phone number"
+                  onChange={(e) =>
+                    setValues({ ...values, phone: e.target.value })
+                  }
+                />
+              </FormGroup>
+              <FormGroup className="col-md-6">
                 <Label htmlFor="password">Password</Label>
                 <Input
                   type="password"
@@ -80,32 +100,29 @@ const Register = () => {
                 />
               </FormGroup>
               <FormGroup className="col-md-6">
-                <Label htmlFor="confirmpwd">Confirm Password</Label>
+                <Label htmlFor="password">Confirm Password</Label>
                 <Input
                   type="password"
                   className="form-control"
-                  id="confirmpwd"
+                  id="password"
                   placeholder="Confirm Password"
                 />
               </FormGroup>
 
               <Col md="12">
-                <Link to="/homepage">
-                  <Button
-                    type="submit"
-                    className="btn btn-success waves-effect waves-light m-r-10"
-                  >
-                    Submit
-                  </Button>
-                </Link>
-                <Link to="/">
-                  <Button
-                    type="submit"
-                    className="btn btn-inverse waves-effect waves-light"
-                  >
-                    Back
-                  </Button>
-                </Link>
+                <Button
+                  type="submit"
+                  className="btn btn-success waves-effect waves-light m-r-10"
+                >
+                  Submit
+                </Button>
+
+                <Button
+                  type="submit"
+                  className="btn btn-inverse waves-effect waves-light"
+                >
+                  Back
+                </Button>
               </Col>
             </Form>
           </Col>

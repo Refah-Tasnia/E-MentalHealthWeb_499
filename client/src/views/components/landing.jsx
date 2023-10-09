@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import Header from "../../components/header/header.jsx";
 import HeaderBanner from "../../components/banner/banner.jsx";
 import Footer from "../../components/footer/footer.jsx";
+import BlogComponent from "../custom-components/sections/blogcomponent.jsx";
 
 const Landing = () => {
   return (
@@ -15,6 +16,7 @@ const Landing = () => {
           <HeaderBanner />
         </div>
       </div>
+      <BlogComponent />
       <Footer />
     </div>
   );

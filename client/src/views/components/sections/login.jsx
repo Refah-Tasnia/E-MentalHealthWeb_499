@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import axios from "axios";
+
 import {
   Container,
   Row,
@@ -11,31 +11,28 @@ import {
   Button,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function LoginForm() {
-  const [userEmail, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  function userLogin() {
-    if (userEmail === "" || password === "") {
-      alert("Please Enter userEmail and password");
-    } else {
-      axios
-        .post("localhost:3001/getUser", {
-          userEmail: email,
-          password: userPass,
-        })
-        .then((response) => {
-          console.log(response.data);
-          if (response.data["loginMessage"] === true) {
-            navigation.navigate("ProfileScreen", {
-              facultyInitial: userEmail,
-            });
-          }
-        })
-        .catch((error) => alert("Wrong email or password"));
-    }
-  }
-
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+  });
+  const navigate = useNavigate();
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    axios
+      .post("http://localhost:3001/login", values)
+      .then((res) => {
+        if (res.data.Status === "Success") {
+          navigate("/homepage");
+        } else {
+          alert("Error");
+        }
+      })
+      .then((err) => console.log(err));
+  };
   return (
     <div>
       <div className="spacer" id="logForm">
@@ -50,25 +47,28 @@ export default function LoginForm() {
       <Container>
         <Row>
           <Col md="12">
-            <Form className="row">
+            <Form className="row" onSubmit={handleSubmit}>
               <FormGroup className="col-md-6">
                 <Label htmlFor="email">Email Address or Phone Number</Label>
                 <Input
-                  onChangeCapture={setEmail}
-                  type="email"
+                  onChange={(e) =>
+                    setValues({ ...values, email: e.target.value })
+                  }
                   className="form-control"
-                  id="userEmail"
+                  id="email"
                   placeholder="Enter email or Phone"
                 />
               </FormGroup>
               <FormGroup className="col-md-6">
                 <Label htmlFor="password">Password</Label>
                 <Input
-                  onChangeCapture={setPassword}
                   type="password"
                   className="form-control"
                   id="password"
                   placeholder="Password"
+                  onChange={(e) =>
+                    setValues({ ...values, password: e.target.value })
+                  }
                 />
               </FormGroup>
 
@@ -77,19 +77,15 @@ export default function LoginForm() {
                 <Label htmlFor="checkbox1"> Remember me </Label>
               </FormGroup>
               <Col md="12">
-                <Link to="/homepage">
-                  <Button
-                    type="submit"
-                    className="btn btn-success waves-effect waves-light m-r-10"
-                  >
-                    Submit
-                  </Button>
-                </Link>
+                <Button
+                  type="submit"
+                  className="btn btn-success waves-effect waves-light m-r-10"
+                >
+                  Submit
+                </Button>
+
                 <Link to="/">
-                  <Button
-                    type="submit"
-                    className="btn btn-inverse waves-effect waves-light"
-                  >
+                  <Button className="btn btn-inverse waves-effect waves-light">
                     Back
                   </Button>
                 </Link>

@@ -8,7 +8,7 @@ import Register from "./views/components/sections/form.jsx";
 import LoginForm from "./views/components/sections/login.jsx";
 import FeatureComponent from "./views/custom-components/sections/featurecomponent.jsx";
 import Home from "./views/components/sections/homepage.jsx";
-
+import BlogComponent from "./views/custom-components/sections/blogcomponent.jsx";
 var hist = createBrowserHistory();
 
 const App = () => {
@@ -21,7 +21,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/homepage" element={<Home />} />
-        <Route path="/blog" element={<FeatureComponent />} />
+        <Route path="/blog" element={<BlogComponent />} />
       </Routes>
     </BrowserRouter>
   );

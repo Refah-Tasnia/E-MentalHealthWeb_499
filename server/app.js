@@ -26,10 +26,11 @@ const db = mysql.createConnection({
 });
 
 app.post("/register", (req, res) => {
-  const sql = "INSERT INTO User (`userName`,`email`,`userPass`) VALUES(?)";
+  const sql =
+    "INSERT INTO Users (`userName`,`email`,`phone`,`userPass`) VALUES(?)";
   bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
     if (err) return res.json({ Error: "Error for hashing password" });
-    const values = [req.body.userName, req.body.email, hash];
+    const values = [req.body.name, req.body.email, req.body.phone, hash];
     db.query(sql, [values], (err, result) => {
       if (err) return res.json({ Error: "Inserting data Error in server" });
       return res.json({ Status: "Success" });
@@ -37,6 +38,29 @@ app.post("/register", (req, res) => {
   });
 });
 
+app.post("/login", (req, res) => {
+  const sql = "SELECT * FROM Users WHERE email = ?";
+
+  db.query(sql, [req.body.email], (err, data) => {
+    if (err) return res.json({ Error: "Login error in server" });
+    if (data.length > 0) {
+      bcrypt.compare(
+        req.body.password.toString(),
+        data[0].userPass,
+        (err, response) => {
+          if (err) return res.json({ Error: "Password does not match" });
+          if (response) {
+            return res.json({ Status: "Success" });
+          } else {
+            return res.json({ Error: "Invalid Password " });
+          }
+        }
+      );
+    } else {
+      return res.json({ Error: "Email is not registered" });
+    }
+  });
+});
 app.listen(PORT, () => {
   console.log(`Express App is listening to ${PORT}`);
 });
