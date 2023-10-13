@@ -102,7 +102,7 @@ const HeaderBanner = () => {
             <Link to="#" className="nav-link" style={navLinkStyle}>
               Chatbot
             </Link>
-            <Link to="#" className="nav-link" style={navLinkStyle}>
+            <Link to="/blog" className="nav-link" style={navLinkStyle}>
               Blog Post
             </Link>
           </Nav>

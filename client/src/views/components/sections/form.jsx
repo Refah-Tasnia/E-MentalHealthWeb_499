@@ -17,11 +17,16 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     phone: "",
   });
   const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (values.password !== values.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
     axios
       .post("http://localhost:3001/register", values)
       .then((res) => {
@@ -104,7 +109,10 @@ const Register = () => {
                 <Input
                   type="password"
                   className="form-control"
-                  id="password"
+                  id="confirmPassword"
+                  onChange={(e) =>
+                    setValues({ ...values, confirmPassword: e.target.value })
+                  }
                   placeholder="Confirm Password"
                 />
               </FormGroup>

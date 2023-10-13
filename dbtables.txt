@@ -61,3 +61,12 @@ CREATE TABLE AdminLogs (
   
     FOREIGN KEY (AdminID) REFERENCES Users(userID)
 );
+CREATE TABLE Admin (
+    AdminID INT NOT NULL,
+    adminName VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+adminPass VARCHAR(255) NOT NULL,
+phone INT NOT NULL,
+PRIMARY KEY(adminID, phone)
+   
+);
