@@ -8,10 +8,12 @@ PRIMARY KEY(userID, email, phone)
    
 );
 CREATE TABLE Psychologists (
-    psyID INT PRIMARY KEY AUTO_INCREMENT,
+    psyID INT NOT NULL AUTO_INCREMENT,
     psyName VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    psyPass VARCHAR(255) NOT NULL
+    psyPass VARCHAR(255) NOT NULL,
+phone INT,
+PRIMARY KEY(psyID, email)
 
 );
 CREATE TABLE Assessments (
