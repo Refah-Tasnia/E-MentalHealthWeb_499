@@ -2,10 +2,8 @@ import express from "express";
 import cors from "cors";
 
 import mysql from "mysql";
-import jsonwebtoken from "jsonwebtoken";
-import bcrypt from "bcrypt";
+
 import cookieParser from "cookie-parser";
-const salt = 10;
 
 const app = express();
 app.use(express.json());
@@ -27,7 +25,7 @@ const db = mysql.createConnection({
 
 app.post("/register", (req, res) => {
   const sql =
-    "INSERT INTO Users (`userName`,`email`,`phone`,`userPass`) VALUES(?)";
+    "INSERT INTO Users (`userName`,`email`,`phone`,`userPass`) VALUES(?,?,?,?)";
 
   const values = [
     req.body.name,
@@ -64,4 +62,11 @@ app.post("/login", (req, res) => {
 });
 app.listen(PORT, () => {
   console.log(`Express App is listening to ${PORT}`);
+});
+db.connect((err) => {
+  if (err) {
+    console.error("Database connection error:", err);
+  } else {
+    console.log("Connected to the database");
+  }
 });

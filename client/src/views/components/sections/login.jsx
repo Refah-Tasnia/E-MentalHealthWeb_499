@@ -86,13 +86,21 @@ export default function LoginForm() {
 
                 <Link to="/">
                   <Button className="btn btn-inverse waves-effect waves-light">
-                    Back
+                    Back to home
                   </Button>
                 </Link>
               </Col>
             </Form>
           </Col>
-        </Row>
+        </Row>{" "}
+        <div>.</div>
+        <div>
+          <a>Not a member yet?</a>
+          <Link to={"/register"} className="linking text-themecolor m-t-10">
+            Sign Up
+          </Link>
+        </div>
+        <div className="spacer"></div>
       </Container>
     </div>
   );

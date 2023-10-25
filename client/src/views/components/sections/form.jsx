@@ -9,7 +9,7 @@ import {
   Input,
   Button,
 } from "reactstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 const Register = () => {
@@ -23,9 +23,19 @@ const Register = () => {
   const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (values.password !== values.confirmPassword) {
-      alert("Passwords do not match");
+
+    if (values.email == "" || values.name == "" || values.phone == "") {
+      alert("Please Enter necessary details");
       return;
+    } else {
+      if (values.password !== values.confirmPassword) {
+        alert("Passwords do not match");
+        return;
+      }
+      if (values.phone.length < 11) {
+        alert("Please enter a valid 11-digit phone number");
+        return;
+      }
     }
     axios
       .post("http://localhost:3001/register", values)
@@ -105,7 +115,7 @@ const Register = () => {
                 />
               </FormGroup>
               <FormGroup className="col-md-6">
-                <Label htmlFor="password">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <Input
                   type="password"
                   className="form-control"
@@ -124,17 +134,24 @@ const Register = () => {
                 >
                   Submit
                 </Button>
-
-                <Button
-                  type="submit"
+                <Link
+                  to={"/"}
                   className="btn btn-inverse waves-effect waves-light"
                 >
-                  Back
-                </Button>
+                  Back to home
+                </Link>
               </Col>
             </Form>
           </Col>
         </Row>
+        <div>.</div>
+        <div>
+          <a>Already a member?</a>
+          <Link to={"/login"} className="linking text-themecolor m-t-10">
+            Login
+          </Link>
+        </div>
+        <div className="spacer"></div>
       </Container>
     </div>
   );
