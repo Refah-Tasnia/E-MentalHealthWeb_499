@@ -16,7 +16,7 @@ const Landing = () => {
           <HeaderBanner />
         </div>
       </div>
-      <BlogComponent />
+
       <Footer />
     </div>
   );

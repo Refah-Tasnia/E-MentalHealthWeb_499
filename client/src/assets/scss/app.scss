@@ -70,18 +70,21 @@ html body .mdi-set {
   line-height: initial;
 }
 
-/*******************
+/*****************src/assets/images/landingpage/banner-bg.jpg**
 Headings
 *******************/
 
 h1,
 h2,
+h6 {
+  color: white;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
 h3,
 h4,
-h5,
-h6 {
-  color: $headingtext;
-  font-family: $headingfont;
+h5 {
+  color: $dark;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 h1 {
@@ -977,7 +980,7 @@ Buttons
 
 .btn-link {
   box-shadow: none;
-  color: $dark;
+  color: $white;
   padding: 10px 15px;
 
   .underline {

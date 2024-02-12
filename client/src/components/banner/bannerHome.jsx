@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-  Container,
   Row,
   Col,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Container,
   NavbarBrand,
   Navbar,
   Nav,
@@ -16,16 +16,28 @@ import {
   Collapse,
 } from "reactstrap";
 import { HashLink as Link } from "react-router-hash-link";
+import logo from "../../assets/images/logos/mental-health.png";
 
 const BannerHome = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
+  const backgroundImageStyle = {
+    backgroundImage: "url('src/assets/images/therapy.webp')",
+    backgroundSize: "120% auto", // Adjust the size as needed
+    backgroundPosition: "100% 50%", // Adjust the horizontal and vertical position
+    opacity: "70%",
+  };
 
   const containerStyle = {
-    background: "url('src/assets/images/landingpage/banner-bg.jpg')",
-    backgroundSize: "cover",
+    //background: "url('src/assets/images/landingpage/banner-bg.jpg')",
+    backgroundSize: "auto",
     backgroundPosition: "center",
     color: "white",
     padding: "20px",
+    height: "15px", // Adjust the height according to your needs
+    overflow: "hidden",
   };
   const header2Style = {
     backgroundPosition: "center",
@@ -99,181 +111,38 @@ const BannerHome = () => {
   };
 
   return (
-    <div style={containerStyle} className="static-slider-head">
-      <Container>
-        <div style={header2Style}>
-          <Navbar expand="lg" className="justify-content-end">
-            <div style={{ height: "35vh" }}></div>
-            <Nav className="ml-auto">
-              <Link to="/" className="nav-link" style={navLinkStyle}>
-                Psychologists
-              </Link>
-
-              <Link to="/blog" className="nav-link" style={navLinkStyle}>
-                Blog Post
-              </Link>
-              <Link to="/chat" className="nav-link" style={navLinkStyle}>
-                Chatbot
-              </Link>
-              <UncontrolledDropdown
-                nav
-                inNavbar
-                isOpen={dropdownOpen}
-                toggle={toggleDropdown}
-                style={{ ...navLinkStyle, color: "white" }}
-              >
-                <DropdownToggle
-                  nav
-                  className="fa fa-angle-down m-l-5"
-                  style={{ color: "white" }}
-                >
-                  Our Services
-                </DropdownToggle>
-                <DropdownMenu className="b-none animated fadeInUp">
-                  <DropdownItem>Psychological Counseling</DropdownItem>
-                  <DropdownItem>Free Mental Health Test</DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-
-              <Link to="/about" className="nav-link" style={navLinkStyle}>
-                About Us
-              </Link>
-
-              <Link to="/VideoHome" className="nav-link" style={navLinkStyle}>
-                Video Conference
-              </Link>
-            </Nav>
-          </Navbar>
-        </div>
-        <Row className="justify-content-center">
+    <div>
+      <div style={containerStyle}></div>
+      <div className="spacer"></div>
+      <div className="header1 po-relative">.</div>
+      <div>
+        <Row class="align-self-center text-center col-md-6">
           <Col lg="8" md="6" className="align-self-center text-center">
-            <div style={{ height: "1vh" }}></div>
+            <h3
+              style={{
+                textAlign: "center",
+                fontFamily: "Lucida console", // Change the font family
 
-            <h1 className="title font-bold" style={titleStyle}>
-              NLP-Integrated Smart Web System for E-Mental Health
-            </h1>
-            <p className="subtitle font-light" style={subtitleStyle}>
-              Your Path to Mental Wellness: Where AI Meets Empathy
-            </p>
+                fontWeight: "bold", // Set the font weight to bold
+                color: "#0D3952",
+              }}
+            >
+              Welcome!
+            </h3>
+            <div style={backgroundImageStyle}>
+              <p>.</p>
+              <p>.</p>
+
+              <p>.</p>
+              <p>.</p>
+              <p>.</p>
+            </div>
             <div style={{ height: "1vh" }}></div>
           </Col>
         </Row>
-      </Container>
+      </div>
     </div>
   );
 };
 
 export default BannerHome;
-/*
-            <h1 className="title font-bold" style={titleStyle}>
-              NLP-Integrated Smart Web System for E-Mental Health
-            </h1>
-            <p className="subtitle font-light" style={subtitleStyle}>
-              Your Path to Mental Wellness: Where AI Meets Empathy
-            </p>
-            <div style={{ height: "1vh" }}></div>
-
-            <h2 className="title" style={sectionTitleStyle}>
-              About Us
-            </h2>
-            <p className="subtitle" style={sectionSubtitleStyle}>
-              Welcome to E-mental Health, your trusted platform for mental
-              health support and guidance. At E-mental Health, we are dedicated
-              to improving the mental well-being of individuals through
-              accessible and professional mental health services.
-            </p>
-            <div style={{ height: "1vh" }}></div>
-            <h2 className="title" style={sectionTitleStyle}>
-              Our Mission
-            </h2>
-            <p className="subtitle" style={sectionSubtitleStyle}>
-              Our mission is to provide a safe and supportive environment for
-              individuals seeking mental health assistance. We believe that
-              mental health is a fundamental aspect of overall well-being, and
-              everyone deserves access to quality mental health care. Through
-              our platform, we aim to:
-            </p>
-            <div style={{ height: "1vh" }}></div>
-            <h3 className="mission-point" style={missionPointStyle}>
-              Promote Awareness:
-            </h3>
-            <p className="mission-description" style={missionDescriptionStyle}>
-              Raise awareness about mental health issues and reduce the stigma
-              surrounding them.
-            </p>
-
-            <h3 className="mission-point" style={missionPointStyle}>
-              Provide Support:
-            </h3>
-            <p className="mission-description" style={missionDescriptionStyle}>
-              Offer a range of services to support individuals in their mental
-              health journey.
-            </p>
-
-            <h3 className="mission-point" style={missionPointStyle}>
-              Connect You:
-            </h3>
-            <p className="mission-description" style={missionDescriptionStyle}>
-              Connect individuals with experienced and compassionate mental
-              health professionals.
-            </p>
-            <div style={{ height: "1vh" }}></div>
-            <h2 className="title" style={sectionTitleStyle}>
-              Who We Are
-            </h2>
-            <p className="subtitle" style={sectionSubtitleStyle}>
-              E-mental Health is a team of dedicated professionals to make
-              mental health support easily accessible to all. Our experts bring
-              a wealth of experience and a commitment to providing confidential,
-              evidence-based care.
-            </p>
-            <div style={{ height: "1vh" }}></div>
-            <h2 className="title" style={sectionTitleStyle}>
-              What We Offer
-            </h2>
-
-            <h3 className="mission-point" style={missionPointStyle}>
-              Psychological Support:
-            </h3>
-            <p className="mission-description" style={missionDescriptionStyle}>
-              Our licensed psychologists and counselors are here to listen,
-              support, and guide you through life's challenges. Whether you're
-              dealing with stress, anxiety, depression, or relationship issues,
-              we're here to help.
-            </p>
-
-            <h3 className="mission-point" style={missionPointStyle}>
-              Online Assessments:
-            </h3>
-            <p className="mission-description" style={missionDescriptionStyle}>
-              Take advantage of our online assessments to gain insights into
-              your mental health. These assessments can help you better
-              understand your emotions and well-being.
-            </p>
-
-            <h3 className="mission-point" style={missionPointStyle}>
-              Blogs and Resources:
-            </h3>
-            <p className="mission-description" style={missionDescriptionStyle}>
-              Explore our collection of informative blogs and resources on
-              mental health topics. We aim to educate and empower individuals to
-              take control of their mental health.
-            </p>
-            <div style={{ height: "1vh" }}></div>
-            <h2 className="title" style={sectionTitleStyle}>
-              Your Mental Health Matters
-            </h2>
-            <p className="subtitle" style={sectionSubtitleStyle}>
-              We understand that seeking help for mental health concerns can be
-              a significant step. Your well-being is important to us, and we are
-              committed to providing you with the support and resources you
-              need.
-              <br></br>
-              At E-mental Health, we believe that everyone deserves to live a
-              happy and mentally healthy life. Together, we can work towards a
-              brighter, more balanced future.
-              <br></br>
-              If you have any questions or would like to learn more about our
-              services, please don't hesitate to get in touch.
-            </p>
-            */

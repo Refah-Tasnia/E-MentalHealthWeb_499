@@ -23,7 +23,7 @@ export default function LoginForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .post("http://localhost:3001/login", values)
+      .post("http://localhost:3001/login", values, { withCredentials: true })
       .then((res) => {
         if (res.data.Status === "Success") {
           navigate("/homepage");
@@ -39,7 +39,7 @@ export default function LoginForm() {
         <Container>
           <Row className="justify-content-center">
             <Col md="7" className="text-center">
-              <h1 className="title font-bold">Login</h1>
+              <h3 className="title font-bold">Login</h3>
             </Col>
           </Row>
         </Container>

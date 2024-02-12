@@ -1,26 +1,43 @@
 import React, { useState } from "react";
 import {
-  Container,
   Row,
   Col,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Container,
+  NavbarBrand,
   Navbar,
   Nav,
+  NavItem,
+  NavLink,
+  NavbarToggler,
+  Collapse,
 } from "reactstrap";
 import { HashLink as Link } from "react-router-hash-link";
+import logo from "../../assets/images/logos/mental-health.png";
 
 const HeaderBanner = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
+  const backgroundImageStyle = {
+    backgroundImage: "url('src/assets/images/therapy.webp')",
+    backgroundSize: "120% auto", // Adjust the size as needed
+    backgroundPosition: "100% 50%", // Adjust the horizontal and vertical position
+    opacity: "70%",
+  };
 
   const containerStyle = {
-    background: "url('src/assets/images/landingpage/banner-bg.jpg')",
-    backgroundSize: "cover",
+    //background: "url('src/assets/images/landingpage/banner-bg.jpg')",
+    backgroundSize: "auto",
     backgroundPosition: "center",
     color: "white",
     padding: "20px",
+    height: "1px", // Adjust the height according to your needs
+    overflow: "hidden",
   };
   const header2Style = {
     backgroundPosition: "center",
@@ -94,65 +111,37 @@ const HeaderBanner = () => {
   };
 
   return (
-    <div style={containerStyle} className="static-slider-head">
-      <Container>
-        <div style={header2Style}>
-          <Navbar expand="lg" className="justify-content-end">
-            <div style={{ height: "35vh" }}></div>
-            <Nav className="ml-auto">
-              <Link to="/" className="nav-link" style={navLinkStyle}>
-                Psychologists
-              </Link>
-
-              <Link to="/blog" className="nav-link" style={navLinkStyle}>
-                Blog Post
-              </Link>
-              <Link to="/chat" className="nav-link" style={navLinkStyle}>
-                Chatbot
-              </Link>
-              <Link to="/VideoHome" className="nav-link" style={navLinkStyle}>
-                Video Call
-              </Link>
-              <UncontrolledDropdown
-                nav
-                inNavbar
-                isOpen={dropdownOpen}
-                toggle={toggleDropdown}
-                style={{ ...navLinkStyle, color: "white" }}
-              >
-                <DropdownToggle
-                  nav
-                  className="fa fa-angle-down m-l-5"
-                  style={{ color: "white" }}
-                >
-                  Our Services
-                </DropdownToggle>
-                <DropdownMenu className="b-none animated fadeInUp">
-                  <DropdownItem>Psychological Counseling</DropdownItem>
-                  <DropdownItem>Free Mental Health Test</DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-
-              <Link to="/about" className="nav-link" style={navLinkStyle}>
-                About Us
-              </Link>
-            </Nav>
-          </Navbar>
-        </div>
-        <Row className="justify-content-center">
+    <div>
+      <div style={containerStyle}></div>
+      <div className="spacer"></div>
+      <div className="header1 po-relative">.</div>
+      <div>
+        <Row class="align-self-center text-center col-md-6">
           <Col lg="8" md="6" className="align-self-center text-center">
-            <div style={{ height: "1vh" }}></div>
-
-            <h1 className="title font-bold" style={titleStyle}>
-              NLP-Integrated Smart Web System for E-Mental Health
-            </h1>
-            <p className="subtitle font-light" style={subtitleStyle}>
-              Your Path to Mental Wellness: Where AI Meets Empathy
-            </p>
+            <div style={backgroundImageStyle}>
+              <h1
+                style={{
+                  textAlign: "right",
+                  fontFamily: "Lucida console", // Change the font family
+                  fontSize: "36px", // Adjust the font size
+                  fontWeight: "bold", // Set the font weight to bold
+                  color: "#0D3952",
+                }}
+              >
+                Embrace Wellness, Transform Lives: <br /> Your Journey to Mental
+                Well-being Starts Here!
+                <br />
+                Discover a Haven of Support, Empowerment,
+                <br /> and Healing.
+                <br />
+                Your Mental Health Matters – <br />
+                Let's Navigate the Path <br /> to Wholeness Together.
+              </h1>
+            </div>
             <div style={{ height: "1vh" }}></div>
           </Col>
         </Row>
-      </Container>
+      </div>
     </div>
   );
 };

@@ -55,9 +55,9 @@ const Register = () => {
         <Container>
           <Row className="justify-content-center">
             <Col md="7" className="text-center">
-              <h1 className="title font-bold" id="regHeader">
+              <h4 className="title font-bold" id="regHeader">
                 Register
-              </h1>
+              </h4>
             </Col>
           </Row>
         </Container>
