@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useState } from "react";
 import { HashLink as Link } from "react-router-hash-link";
 import {
@@ -46,17 +45,7 @@ const Header2 = () => {
     <div className="topbar" id="top">
       <div className="header6">
         <div style={backgroundImageStyle}>
-          <div class="align-self-center text-center col-md-6">
-            <div className="align-self-center text-center">
-              <h1>NLP-Integrated Smart Web System for E-Mental Health</h1>
-              <h6> Your Path to Mental Wellness: Where AI Meets Empathy</h6>
-              <div className="text-right">
-                <Link to={"/login"} className="ml-auto mr-2">
-                  <a>Logout</a>
-                </Link>
-              </div>
-            </div>
-          </div>
+          <div class="align-self-center text-center col-md-6"></div>
         </div>
         <div style={{ height: "1vh" }}></div>
         <Container>
@@ -71,16 +60,26 @@ const Header2 = () => {
                 <NavItem>
                   <NavLink href="/chat">Chatbot</NavLink>
                 </NavItem>
+
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav>
-                    Psychiatrist services
+                    Free Mental Health Test
                     <i className="fa fa-angle-down m-l-5"></i>
                   </DropdownToggle>
                   <DropdownMenu className="b-none animated fadeInUp">
-                    <DropdownItem>Video Conferencing</DropdownItem>
-                    <DropdownItem>Book Psychologists</DropdownItem>
+                    <DropdownItem>
+                      <a
+                        href="https://form.jotform.com/240493949889076"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Depression Test
+                      </a>
+                    </DropdownItem>
+                    <DropdownItem>Stress Test</DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
+
                 <NavItem>
                   <NavLink href="/blog">About Us</NavLink>
                 </NavItem>

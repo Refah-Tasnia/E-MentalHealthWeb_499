@@ -4,6 +4,7 @@ import session from "express-session";
 import mysql from "mysql";
 
 import cookieParser from "cookie-parser";
+import jwt from "jsonwebtoken";
 
 const app = express();
 app.set("trust proxy", 1);
@@ -31,7 +32,7 @@ const db = mysql.createConnection({
   password: "",
   database: "E_MentalHealth",
 });
-
+app.set("trust proxy", 1);
 // Enable sessions
 app.use(
   session({
@@ -51,8 +52,8 @@ app.post("/register", async (req, res) => {
   const { name, email, phone, password } = req.body;
 
   const sql =
-    "INSERT INTO Users (`userName`, `email`, `phone`, `userPass`, `otp`) VALUES (?, ?, ?, ?, ?)";
-  const values = [name, email, phone, password, otp];
+    "INSERT INTO Users (`userName`, `email`, `phone`, `userPass`) VALUES (?, ?, ?, ?)";
+  const values = [name, email, phone, password];
 
   db.query(sql, values, (err, result) => {
     if (err) {
@@ -60,7 +61,7 @@ app.post("/register", async (req, res) => {
       return res.status(500).json({ error: "Internal Server Error" });
     }
 
-    return res.json({ status: "Success" });
+    return res.json({ Status: "Success" });
   });
 });
 
@@ -76,8 +77,6 @@ app.post("/login", (req, res) => {
   const adminSql =
     "SELECT * FROM Admin WHERE email = ? AND adminPass = ? LIMIT 1";
 
-  // Note: Update the column names for password in Psychologists and Admin tables
-
   db.query(userSql, [email, password], (err, userData) => {
     if (err) {
       console.error("Error in user query:", err);
@@ -91,8 +90,17 @@ app.post("/login", (req, res) => {
         userName: userData[0].userName,
         email: userData[0].email,
       };
+
       console.log(req.session);
-      return res.json({ Status: "Success", UserData: userData[0] });
+      // Generate a JWT token
+      const token = jwt.sign(
+        { userId: userData[0].userID, userEmail: userData[0].email },
+        "1234", // Replace with a secure secret key
+        { expiresIn: "1h" } // Set the expiration time
+      );
+
+      // Send the token in the response
+      return res.json({ status: "Success", UserData: userData[0], token });
     } else {
       db.query(psychologistSql, [email, password], (err, psychologistData) => {
         if (err) {
@@ -108,7 +116,10 @@ app.post("/login", (req, res) => {
             email: psychologistData[0].email,
           };
 
-          return res.json({ Status: "Success", UserData: psychologistData[0] });
+          return res.json({
+            Status: "Success2",
+            UserData: psychologistData[0],
+          });
         } else {
           db.query(adminSql, [email, password], (err, adminData) => {
             if (err) {
@@ -160,13 +171,21 @@ app.post("/check-auth", (req, res) => {
 //Logout
 app.post("/logout", (req, res) => {
   try {
-    // Destroy the user session or token (depends on your authentication method)
-    // For example, if you're using express-session:
+    console.log("Logout route triggered");
+
+    // Destroy the session and clear the session cookie
     req.session.destroy((err) => {
       if (err) {
         console.error("Error destroying user session:", err);
         return res.status(500).json({ error: "Internal Server Error" });
       }
+
+      // Clear the session cookie
+      res.clearCookie("connect.sid");
+
+      // Expire the session cookie immediately
+      res.cookie("connect.sid", "", { expires: new Date(0) });
+
       console.log("User logout successful");
       res.json({ message: "Logout successful" });
     });
@@ -234,8 +253,8 @@ app.put("/userList/:userID", (req, res) => {
 });
 
 // Handle retrieving all blog posts
-app.get("/blog/posts", (req, res) => {
-  const selectPostsQuery = "SELECT title FROM BlogPosts";
+app.get("/blogPosts", (req, res) => {
+  const selectPostsQuery = "SELECT * FROM BlogPosts";
 
   db.query(selectPostsQuery, (err, results) => {
     if (err) {
@@ -243,8 +262,23 @@ app.get("/blog/posts", (req, res) => {
       return res.status(500).json({ error: "Error retrieving blog posts" });
     }
 
-    return res.status(200).json({ posts: results });
+    return res.json({ results });
   });
+});
+app.get("/blog/:postId", (req, res) => {
+  /*
+  const postId = req.params.postId;
+  const selectPostQuery = `SELECT * FROM BlogPosts WHERE PostID = ?`;
+
+  db.query(selectPostQuery, [postId], (err, results) => {
+    if (err) {
+      console.error("Error retrieving blog post:", err);
+      return res.status(500).json({ error: "Error retrieving blog post" });
+    }
+
+    return res.json({ results });
+  });
+  */
 });
 
 // Handle creating a new blog post
@@ -266,7 +300,7 @@ app.post("/blog/posts", (req, res) => {
 });
 
 // Handle creating a new comment
-app.post("/blog/comments", (req, res) => {
+app.post("/blog/:postId/comments", (req, res) => {
   const { userID, postID, content } = req.body;
 
   const insertCommentQuery =

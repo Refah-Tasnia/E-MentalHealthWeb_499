@@ -111,9 +111,17 @@ const Header = () => {
                 <NavItem>
                   <NavLink
                     style={{ fontSize: "14px", padding: "5px 10px" }}
-                    href="/blog"
+                    href="/about"
                   >
                     About Us
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    style={{ fontSize: "14px", padding: "5px 10px" }}
+                    href="/blog"
+                  >
+                    Blog Posts
                   </NavLink>
                 </NavItem>
               </Nav>

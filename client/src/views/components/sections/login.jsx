@@ -26,7 +26,9 @@ export default function LoginForm() {
       .post("http://localhost:3001/login", values, { withCredentials: true })
       .then((res) => {
         if (res.data.Status === "Success") {
-          navigate("/homepage");
+          navigate(`/homepage`);
+        } else if (res.data.Status === "Success2") {
+          navigate(`/psyHome`);
         } else {
           alert("Error");
         }

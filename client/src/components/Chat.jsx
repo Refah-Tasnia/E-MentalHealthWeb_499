@@ -4,7 +4,7 @@ export class Chat extends Component {
   componentDidMount() {
     (function (d, m) {
       var kommunicateSettings = {
-        appId: "6332666736062dbcf759a693f24fc450",
+        appId: "220c5c1aa7e4a61f6a2aeff33962fc985",
         popupWidget: true,
         automaticChatOpenOnNavigation: true,
       };

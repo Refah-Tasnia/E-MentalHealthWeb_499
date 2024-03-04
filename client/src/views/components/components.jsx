@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 // core components
 import Header from "../../components/header/header.jsx";
-import HeaderBanner from "../../components/banner/banner.jsx";
+
 import Footer from "../../components/footer/footer.jsx";
 
 // sections for this page
@@ -30,8 +30,6 @@ const Components = () => {
       <Header />
       <div className="page-wrapper">
         <div className="container-fluid">
-          <HeaderBanner />
-
           <PageForm />
           <LoginForm />
           <Home />

@@ -45,11 +45,6 @@ const AboutUs = () => {
       <Container>
         <Row className="justify-content-center">
           <Col lg="8" md="6" className="align-self-center text-center">
-            <div>
-              <a style={{ color: "white" }} href="\">
-                Home
-              </a>
-            </div>
             <h2 className="title" style={titleBorderStyle}>
               About Us
             </h2>
