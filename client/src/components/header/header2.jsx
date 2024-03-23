@@ -45,7 +45,17 @@ const Header2 = () => {
     <div className="topbar" id="top">
       <div className="header6">
         <div style={backgroundImageStyle}>
-          <div class="align-self-center text-center col-md-6"></div>
+          <div class="align-self-center text-center col-md-6">
+            <div className="align-self-center text-center">
+              <h1>NLP-Integrated Smart Web System for E-Mental Health</h1>
+              <h6> Your Path to Mental Wellness: Where AI Meets Empathy</h6>
+              <div className="text-right">
+                <Link to={"/login"} className="ml-auto mr-2">
+                  <a>Logout</a>
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
         <div style={{ height: "1vh" }}></div>
         <Container>

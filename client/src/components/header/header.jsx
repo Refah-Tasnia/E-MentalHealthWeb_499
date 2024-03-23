@@ -119,7 +119,7 @@ const Header = () => {
                 <NavItem>
                   <NavLink
                     style={{ fontSize: "14px", padding: "5px 10px" }}
-                    href="/blog"
+                    href="/presc"
                   >
                     Blog Posts
                   </NavLink>

@@ -27,8 +27,6 @@ export default function LoginForm() {
       .then((res) => {
         if (res.data.Status === "Success") {
           navigate(`/homepage`);
-        } else if (res.data.Status === "Success2") {
-          navigate(`/psyHome`);
         } else {
           alert("Error");
         }

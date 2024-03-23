@@ -13,7 +13,7 @@ const Room = () => {
       serverSecret,
       roomId,
       Date.now().toString(),
-      `${roomId}`
+      "Your Name"
     );
     const zc = ZegoUIKitPrebuilt.create(kitToken);
 
