@@ -26,6 +26,7 @@ import BlogPosts from "./views/components/sections/Blog/blogPosts.jsx";
 import HeaderMenu from "./components/header/HeaderMenu.jsx";
 import PrescriptionForm from "./views/components/sections/Prescription/presc.jsx";
 import PsyHome from "./components/banner/PsyHome.jsx";
+import PrescriptionDetailsPage from "./views/components/sections/Prescription/PrescriptionDetailsPage.jsx";
 
 var hist = createBrowserHistory();
 
@@ -57,6 +58,7 @@ const App = () => {
         <Route path="/psyAdmin" element={<PsyAdmin />} />
         <Route path="/blogPost" element={<BlogPosts />} />
         <Route path="/presc" element={<PrescriptionForm />} />
+        <Route path="/presDet" element={<PrescriptionDetailsPage />} />
         <Route path="/psyHome" element={<PsyHome />} />
       </Routes>
     </BrowserRouter>

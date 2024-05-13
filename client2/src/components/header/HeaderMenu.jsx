@@ -8,14 +8,13 @@ import { MdEmail } from "react-icons/md";
 import { FaPhoneAlt } from "react-icons/fa";
 import { IoMdPersonAdd } from "react-icons/io";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react"; // Added useState
 
 const menuOptions = [
   {
     title: "Home",
     link: "/",
   },
-
   {
     title: "Psychologists",
     link: "/psychologists",
@@ -67,6 +66,26 @@ const socialLinks = [
 ];
 
 export default function HeaderMenu() {
+  const [loggedIn, setLoggedIn] = useState(false); // State to track login status
+
+  useEffect(() => {
+    // Check if user is logged in
+    const checkAuth = async () => {
+      try {
+        const response = await fetch("/check-auth", {
+          method: "POST",
+          credentials: "include",
+        });
+        const data = await response.json();
+        setLoggedIn(data.authenticated); // Set loggedIn state based on response
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+      }
+    };
+
+    checkAuth();
+  }, []); // Empty dependency array to run only once on component mount
+
   return (
     <header>
       <div id="usefulLinks" className="h-[30px] bg-[#171C49]">
@@ -83,19 +102,30 @@ export default function HeaderMenu() {
             </div>
             <div className="flex mt-1 font-medium">
               <IoMdPersonAdd className="text-[20px] text-[#fff] mt-0.5" />
-              <Link
-                to="/login"
-                className="pl-2 pr-1 text-[#fff] hover:text-red-500"
-              >
-                Login
-              </Link>
-              <span>/</span>
-              <Link
-                to="/register"
-                className="pl-1 text-[#fff] hover:text-red-500"
-              >
-                Register
-              </Link>
+              {loggedIn ? ( // Render logout if user is logged in
+                <Link
+                  to="/logout"
+                  className="pl-2 pr-1 text-[#fff] hover:text-red-500"
+                >
+                  Logout
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="pl-2 pr-1 text-[#fff] hover:text-red-500"
+                  >
+                    Login
+                  </Link>
+                  <span>/</span>
+                  <Link
+                    to="/register"
+                    className="pl-1 text-[#fff] hover:text-red-500"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

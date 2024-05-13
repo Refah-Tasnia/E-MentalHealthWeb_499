@@ -40,7 +40,7 @@ const Register = () => {
     axios
       .post("http://localhost:3001/register", values)
       .then((res) => {
-        if (res.data.Status === "Success") {
+        if (res.data.status === "Success") {
           navigate("/login");
         } else {
           alert("Error");

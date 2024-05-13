@@ -2,29 +2,32 @@ import express from "express";
 import cors from "cors";
 import session from "express-session";
 import mysql from "mysql";
-
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
+import { Server as SocketIOServer } from "socket.io";
+import { spawn } from "child_process";
 
+// Create an Express app
 const app = express();
+
+// Set trust proxy
 app.set("trust proxy", 1);
 
+// Middleware setup
 app.use(express.json());
-
 app.use(
   cors({
-    origin: "http://localhost:3000", // Specify the origin of your client application
-    credentials: true, // Allow credentials (cookies) to be sent
+    origin: "http://localhost:3000",
+    credentials: true,
   })
 );
 app.use(cookieParser());
-
 app.options("*", cors());
 
-const PORT = 3001;
+// Define port
+const PORT = process.env.PORT || 3001;
 
-app.use(express.json());
-
+// Database connection
 const db = mysql.createConnection({
   connectionLimit: 10,
   host: "localhost",
@@ -32,7 +35,10 @@ const db = mysql.createConnection({
   password: "",
   database: "E_MentalHealth",
 });
+
+// Set trust proxy
 app.set("trust proxy", 1);
+
 // Enable sessions
 app.use(
   session({
@@ -40,12 +46,85 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // set to true if using HTTPS
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      maxAge: 3600000, // 1 hour in milliseconds
+      maxAge: 3600000,
     },
   })
 );
+//EMOTION
+app.post("/emotion-detection", (req, res) => {
+  // Spawn a child process to run the Python script
+  const emotionDetectionProcess = spawn("python", [
+    "/Users/refah/Desktop/Course resources/CSE499 A/Emotion/Emotion-detection-from-webcam-main/realtimedetection.py",
+  ]);
+
+  // Handle output or errors from the emotion detection process
+  emotionDetectionProcess.stdout.on("data", (data) => {
+    // Process emotion data
+    const detectedEmotion = data.toString().trim(); // Assuming emotion is sent as a string
+    res.json({ emotion: detectedEmotion });
+  });
+
+  emotionDetectionProcess.stderr.on("data", (data) => {
+    console.error(`Emotion detection error: ${data}`);
+    res.status(500).json({ error: "Error during emotion detection" });
+  });
+});
+
+//PRECRIPTION
+
+// Endpoint to handle prescription submission
+app.post("/prescription", (req, res) => {
+  const {
+    issuedTo,
+    issuedBy,
+    age,
+    gender,
+    suspectedCategory,
+    prescriptionText,
+  } = req.body;
+
+  const sql =
+    "INSERT INTO Prescriptions (issuedTo, issuedBy, age, gender, suspectedCategory, prescriptionText) VALUES (?, ?, ?, ?, ?, ?)";
+  const values = [
+    issuedTo,
+    issuedBy,
+    age,
+    gender,
+    suspectedCategory,
+    prescriptionText,
+  ];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error("Error inserting prescription:", err);
+      return res.status(500).json({ error: "Error saving prescription" });
+    }
+
+    console.log("Prescription saved successfully");
+    res.json({ message: "Prescription submitted successfully" });
+  });
+});
+
+// Endpoint to fetch prescription details by ID
+app.get("/prescriptions/:id", (req, res) => {
+  const prescriptionId = req.params.id;
+  const sql = "SELECT * FROM Prescriptions WHERE id = ?";
+
+  db.query(sql, [prescriptionId], (err, result) => {
+    if (err) {
+      console.error("Error retrieving prescription:", err);
+      return res.status(500).json({ error: "Error retrieving prescription" });
+    }
+
+    if (result.length === 0) {
+      return res.status(404).json({ error: "Prescription not found" });
+    }
+
+    res.json(result[0]);
+  });
+});
 
 // Registration endpoint
 app.post("/register", async (req, res) => {
@@ -317,11 +396,36 @@ app.post("/blog/:postId/comments", (req, res) => {
   });
 });
 
+// Start the Express server
+const server = app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+// Attach Socket.IO to the Express server
+const io = new SocketIOServer(server, {
+  transports: ["websocket", "polling"],
+});
+
+// Socket.IO event handling
+io.on("connection", (socket) => {
+  console.log("A user connected");
+
+  socket.on("joinRoom", (roomId) => {
+    socket.join(roomId);
+    console.log(`User joined room ${roomId}`);
+  });
+
+  socket.on("stream", (roomId, stream) => {
+    io.to(roomId).emit("stream", stream);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
+
 //APP listen and DB CONNECT
 
-app.listen(PORT, () => {
-  console.log(`Express App is listening to ${PORT}`);
-});
 db.connect((err) => {
   if (err) {
     console.error("Database connection error:", err);

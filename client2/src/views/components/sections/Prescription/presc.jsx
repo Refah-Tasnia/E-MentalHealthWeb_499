@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const PrescriptionForm = () => {
   const [issuedTo, setIssuedTo] = useState("");
@@ -10,14 +11,23 @@ const PrescriptionForm = () => {
 
   const handlePrescribe = () => {
     // Implement logic to handle the prescription submission
-    console.log("Prescribing...");
-    console.log("Issued To:", issuedTo);
-    console.log("Issued By:", issuedBy);
-    console.log("Age:", age);
-    console.log("Gender:", gender);
-    console.log("Suspected Category:", suspectedCategory);
-    console.log("Prescription Text:", prescriptionText);
-    // You can make an API call or perform any other necessary actions here
+    axios
+      .post("/prescription", {
+        issuedTo,
+        issuedBy,
+        age,
+        gender,
+        suspectedCategory,
+        prescriptionText,
+      })
+      .then((response) => {
+        alert("Prescription submitted successfully");
+        // Optionally, you can navigate to the prescription details page after submission
+        // window.location.href = "/prescription-details";
+      })
+      .catch((error) => {
+        alert("Error submitting prescription:", error);
+      });
   };
 
   return (

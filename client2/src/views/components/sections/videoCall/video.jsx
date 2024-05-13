@@ -1,4 +1,92 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import io from "socket.io-client";
+
+const Video = () => {
+  const [value, setValue] = useState("");
+  const [localStream, setLocalStream] = useState(null);
+  const videoRef = useRef();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Get the user's local video stream
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        // Set the local stream state
+        setLocalStream(stream);
+        // Display the local stream in the video element
+        videoRef.current.srcObject = stream;
+      })
+      .catch((error) => {
+        console.error("Error accessing media devices:", error);
+      });
+  }, []);
+
+  const handleJoinRoom = () => {
+    if (value.trim() === "") {
+      alert("Please enter a valid room code.");
+      return;
+    }
+    navigate(`/room/${value}`);
+  };
+
+  return (
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <div style={{ width: "100%", maxWidth: "400px", marginBottom: "20px" }}>
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          style={{
+            width: "100%",
+            borderRadius: "8px",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          }}
+        />
+      </div>
+      <div style={{ marginBottom: "20px" }}>
+        <input
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          type="text"
+          placeholder="Enter/Create a Room Code"
+          style={{
+            padding: "8px",
+            marginRight: "10px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+          }}
+        />
+        <button
+          onClick={handleJoinRoom}
+          style={{
+            padding: "8px 16px",
+            borderRadius: "4px",
+            background: "#007bff",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Join
+        </button>
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <Link to="/psychologists" style={{ marginRight: "10px" }}>
+          Contact a Psychologist
+        </Link>
+        <Link to="/">Back to home</Link>
+      </div>
+    </div>
+  );
+};
+
+export default Video;
+
+/*import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Button } from "reactstrap";
@@ -86,3 +174,4 @@ const Video = () => {
 };
 
 export default Video;
+*/
