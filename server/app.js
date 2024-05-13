@@ -52,25 +52,6 @@ app.use(
     },
   })
 );
-//EMOTION
-app.post("/emotion-detection", (req, res) => {
-  // Spawn a child process to run the Python script
-  const emotionDetectionProcess = spawn("python", [
-    "/Users/refah/Desktop/Course resources/CSE499 A/Emotion/Emotion-detection-from-webcam-main/realtimedetection.py",
-  ]);
-
-  // Handle output or errors from the emotion detection process
-  emotionDetectionProcess.stdout.on("data", (data) => {
-    // Process emotion data
-    const detectedEmotion = data.toString().trim(); // Assuming emotion is sent as a string
-    res.json({ emotion: detectedEmotion });
-  });
-
-  emotionDetectionProcess.stderr.on("data", (data) => {
-    console.error(`Emotion detection error: ${data}`);
-    res.status(500).json({ error: "Error during emotion detection" });
-  });
-});
 
 //PRECRIPTION
 
@@ -86,7 +67,7 @@ app.post("/prescription", (req, res) => {
   } = req.body;
 
   const sql =
-    "INSERT INTO Prescriptions (issuedTo, issuedBy, age, gender, suspectedCategory, prescriptionText) VALUES (?, ?, ?, ?, ?, ?)";
+    "INSERT INTO Prescriptions (`issuedTo`, `issuedBy`, `age`, `gender`, `suspectedCategory`, `prescriptionText`) VALUES (?, ?, ?, ?, ?, ?)";
   const values = [
     issuedTo,
     issuedBy,
@@ -127,6 +108,7 @@ app.get("/prescriptions/:id", (req, res) => {
 });
 
 // Registration endpoint
+
 app.post("/register", async (req, res) => {
   const { name, email, phone, password } = req.body;
 
@@ -407,6 +389,7 @@ const io = new SocketIOServer(server, {
 });
 
 // Socket.IO event handling
+// Socket.IO event handling
 io.on("connection", (socket) => {
   console.log("A user connected");
 
@@ -415,8 +398,50 @@ io.on("connection", (socket) => {
     console.log(`User joined room ${roomId}`);
   });
 
-  socket.on("stream", (roomId, stream) => {
-    io.to(roomId).emit("stream", stream);
+  socket.on("stream", (roomId, stream, userId) => {
+    io.to(roomId).emit("stream", stream, userId);
+  });
+
+  socket.on("emotionFrame", (roomId, imageData) => {
+    const emotionDetectionProcess = spawn("python", [
+      "realtimedetection.py", // Update with the correct path
+    ]);
+
+    emotionDetectionProcess.stdout.on("data", (data) => {
+      const detectedEmotion = data.toString().trim(); // Assuming emotion is sent as a string
+      io.to(roomId).emit("detectedEmotion", detectedEmotion);
+    });
+
+    emotionDetectionProcess.stderr.on("data", (data) => {
+      console.error(`Emotion detection error: ${data}`);
+      io.to(roomId).emit("emotionDetectionError", data.toString());
+    });
+
+    // Write imageData to the stdin of the child process
+    emotionDetectionProcess.stdin.write(imageData);
+    emotionDetectionProcess.stdin.end();
+  });
+
+  socket.on("joinRoomScript", (roomId) => {
+    // Execute the Python script here
+    const pythonScriptProcess = spawn("python", [
+      "realtimedetection.py", // Update with the correct path
+    ]);
+
+    pythonScriptProcess.stdout.on("data", (data) => {
+      console.log(`Python script output: ${data}`);
+      // Handle output from the Python script if needed
+    });
+
+    pythonScriptProcess.stderr.on("data", (data) => {
+      console.error(`Error executing Python script: ${data}`);
+      // Handle error from the Python script if needed
+    });
+
+    pythonScriptProcess.on("close", (code) => {
+      console.log(`Python script exited with code ${code}`);
+      // Handle script exit if needed
+    });
   });
 
   socket.on("disconnect", () => {

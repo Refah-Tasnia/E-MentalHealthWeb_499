@@ -95,10 +95,3 @@ function Landing2() {
 }
 
 export default Landing2;
-
-/*    <div className="flex gap-4 justify-center text-black">
-                <p>lessons : {item.lessons}</p>
-                <p>Students : {item.students}</p>
-                <p>All levels</p>
-              </div>
-              <div className="text-red-600 font-medium">payment</div> */

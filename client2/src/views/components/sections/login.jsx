@@ -25,9 +25,9 @@ export default function LoginForm() {
     axios
       .post("http://localhost:3001/login", values, { withCredentials: true })
       .then((res) => {
-        if (res.data.status === "Success") {
+        if (res.data.Status === "Success") {
           navigate(`/homepage`);
-        } else if (res.data.status === "Success2") {
+        } else if (res.data.Status === "Success2") {
           navigate(`/psyHome`);
         } else {
           alert("Error");

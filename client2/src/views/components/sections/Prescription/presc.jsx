@@ -26,7 +26,22 @@ const PrescriptionForm = () => {
         // window.location.href = "/prescription-details";
       })
       .catch((error) => {
-        alert("Error submitting prescription:", error);
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.error
+        ) {
+          // If there is an error message in the response data, display it
+          console.error(
+            "Error submitting prescription:",
+            error.response.data.error
+          );
+          alert("Error submitting prescription: " + error.response.data.error);
+        } else {
+          // If there is no specific error message, display a generic error message
+          console.error("Error submitting prescription:", error.message);
+          alert("Error submitting prescription: " + error.message);
+        }
       });
   };
 

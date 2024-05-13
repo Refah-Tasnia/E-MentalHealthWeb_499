@@ -64,6 +64,9 @@ const Room = () => {
       }
     });
 
+    // Trigger Python script execution when user joins the room
+    socketRef.current.emit("joinRoomScript", roomId);
+
     return () => {
       socketRef.current.disconnect();
     };
@@ -102,54 +105,29 @@ const Room = () => {
       track.enabled = isVideoOn;
     });
   };
-
   const startEmotionDetection = (stream) => {
-    // Create a new video element for emotion detection
-    const emotionVideo = document.createElement("video");
-    emotionVideo.srcObject = stream;
+    const emotionInterval = setInterval(() => {
+      const videoElement = localVideoRef.current;
+      const canvasElement = document.createElement("canvas");
+      const canvasCtx = canvasElement.getContext("2d");
 
-    // Play the video to start capturing frames
-    emotionVideo.play().catch((error) => {
-      console.error("Error playing video for emotion detection:", error);
-    });
+      canvasCtx.drawImage(
+        videoElement,
+        0,
+        0,
+        videoElement.videoWidth,
+        videoElement.videoHeight
+      );
+      const imageData = canvasCtx.getImageData(
+        0,
+        0,
+        videoElement.videoWidth,
+        videoElement.videoHeight
+      );
+      socketRef.current.emit("emotionFrame", roomId, imageData.data); // Send only the image data
+    }, 1000 / 10); // Send a frame every 100ms (10 frames per second)
 
-    // When enough frames are available, stop the video and extract frames for processing
-    emotionVideo.oncanplay = () => {
-      // Stop the video
-      emotionVideo.pause();
-
-      // Create a canvas element to extract frames
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-
-      // Set canvas dimensions
-      canvas.width = emotionVideo.videoWidth;
-      canvas.height = emotionVideo.videoHeight;
-
-      // Draw the video frame onto the canvas
-      context.drawImage(emotionVideo, 0, 0, canvas.width, canvas.height);
-
-      // Extract the frame as an image blob
-      canvas.toBlob((blob) => {
-        // Create a FormData object to send the blob to the server
-        const formData = new FormData();
-        formData.append("video", blob, "emotion_video.webm");
-
-        // Send the video blob to the backend for emotion detection
-        fetch("/emotion-detection", {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            // Handle emotion detection results
-            console.log("Emotion detection results:", data);
-          })
-          .catch((error) =>
-            console.error("Error during emotion detection:", error)
-          );
-      }, "video/webm");
-    };
+    return () => clearInterval(emotionInterval);
   };
 
   return (
@@ -196,80 +174,3 @@ const Room = () => {
 };
 
 export default Room;
-
-/*import React from "react";
-import { useParams } from "react-router-dom";
-import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
-import { Link } from "react-router-dom";
-
-
-
-const Room = () => {
-  const { roomId } = useParams();
-  const myMeeting = async (element) => {
-    const appID = 191973647;
-    const serverSecret = "2a78b0a81aa190cc225fe71b196f01d4";
-    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
-      appID,
-      serverSecret,
-      roomId,
-      Date.now().toString(),
-      `${roomId}`
-    );
-    const zc = ZegoUIKitPrebuilt.create(kitToken);
-
-    zc.joinRoom({
-      container: element,
-      sharedLinks: [
-        {
-          name: "Copy Link",
-          url: `http://localhost:3000/room/${roomId}`,
-        },
-      ],
-      onJoinRoom: (room) => {
-        room.on("stream", (stream) => {
-          // Handle the incoming audio stream
-          // For example, play it through an audio element
-          const audioElement = document.createElement("audio");
-          audioElement.srcObject = stream;
-          audioElement.play();
-        });
-      },
-
-      turnOnMicrophoneWhenJoining: true,
-      turnOnCameraWhenJoining: true,
-      showMyCameraToggleButton: true,
-      showMyMicrophoneToggleButton: true,
-      showAudioVideoSettingsButton: true,
-      showScreenSharingButton: false,
-      showTextChat: true,
-      showUserList: true,
-      maxUsers: 2,
-      layout: "Auto",
-      showLayoutButton: false,
-      enableStereo: true,
-      showNonVideoUser: true,
-      showTurnOffRemoteCameraButton: true,
-      showTurnOffRemoteMicrophoneButton: true,
-      scenario: {
-        mode: ZegoUIKitPrebuilt.OneONoneCall,
-      },
-      videoResolutionList: [
-        ZegoUIKitPrebuilt.VideoResolution_360P,
-        ZegoUIKitPrebuilt.VideoResolution_180P,
-        ZegoUIKitPrebuilt.VideoResolution_480P,
-        ZegoUIKitPrebuilt.VideoResolution_720P,
-      ],
-      videoResolutionDefault: ZegoUIKitPrebuilt.VideoResolution_360P,
-    });
-  };
-  return (
-    <div>
-      <div ref={myMeeting} />
-      <center>
-        <a href="\">Return Home</a>
-      </center>
-    </div>
-  );
-};
-export default Room; */
