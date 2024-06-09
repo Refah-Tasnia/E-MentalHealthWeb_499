@@ -72,15 +72,3 @@ phone INT NOT NULL,
 PRIMARY KEY(adminID, phone)
    
 );
-
-
-CREATE TABLE Prescriptions (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  issuedTo VARCHAR(255) NOT NULL,
-  issuedBy VARCHAR(255) NOT NULL,
-  age INT NOT NULL,
-  gender VARCHAR(10) NOT NULL,
-  suspectedCategory VARCHAR(255) NOT NULL,
-  prescriptionText TEXT NOT NULL,
-  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);

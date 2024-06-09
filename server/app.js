@@ -56,7 +56,8 @@ app.use(
 //PRECRIPTION
 
 // Endpoint to handle prescription submission
-app.post("/prescription", (req, res) => {
+app.post("/prescriptions", (req, res) => {
+  // Changed endpoint from '/prescription' to '/prescriptions'
   const {
     issuedTo,
     issuedBy,
@@ -67,7 +68,7 @@ app.post("/prescription", (req, res) => {
   } = req.body;
 
   const sql =
-    "INSERT INTO Prescriptions (`issuedTo`, `issuedBy`, `age`, `gender`, `suspectedCategory`, `prescriptionText`) VALUES (?, ?, ?, ?, ?, ?)";
+    "INSERT INTO Prescriptions (issuedTo, issuedBy, age, gender, suspectedCategory, prescriptionText) VALUES (?, ?, ?, ?, ?, ?)"; // Removed backticks from column names in SQL query
   const values = [
     issuedTo,
     issuedBy,
@@ -88,21 +89,46 @@ app.post("/prescription", (req, res) => {
   });
 });
 
-// Endpoint to fetch prescription details by ID
+// Endpoint to fetch prescription list
+
+app.get("/prescriptions", (req, res) => {
+  const presQuery = "SELECT * FROM Prescriptions"; // Select all columns
+
+  db.query(presQuery, (err, presData) => {
+    if (err) {
+      console.error("Error fetching prescriptions:", err);
+      return res.status(500).json({ error: "Error fetching prescriptions" });
+    }
+
+    // Send the list of prescription objects to the client
+    res.json(presData);
+  });
+});
+
 app.get("/prescriptions/:id", (req, res) => {
   const prescriptionId = req.params.id;
-  const sql = "SELECT * FROM Prescriptions WHERE id = ?";
+  // Format the date part of the createdAt timestamp
+  const sql = `
+    SELECT 
+      id, 
+      issuedTo, 
+      issuedBy, 
+      age, 
+      gender, 
+      suspectedCategory, 
+      prescriptionText, 
+      DATE_FORMAT(createdAt, '%Y-%m-%d') as date
+    FROM Prescriptions 
+    WHERE id = ?`;
 
   db.query(sql, [prescriptionId], (err, result) => {
     if (err) {
       console.error("Error retrieving prescription:", err);
       return res.status(500).json({ error: "Error retrieving prescription" });
     }
-
     if (result.length === 0) {
       return res.status(404).json({ error: "Prescription not found" });
     }
-
     res.json(result[0]);
   });
 });
@@ -127,85 +153,102 @@ app.post("/register", async (req, res) => {
 });
 
 //LOGIN
+
 app.post("/login", (req, res) => {
-  const email = req.body.email;
+  const identifier = req.body.email || req.body.phone; // Allow email or phone
   const password = req.body.password;
 
-  const userSql =
-    "SELECT * FROM Users WHERE email = ? AND userPass = ? LIMIT 1";
-  const psychologistSql =
-    "SELECT * FROM Psychologists WHERE email = ? AND psyPass = ? LIMIT 1";
-  const adminSql =
-    "SELECT * FROM Admin WHERE email = ? AND adminPass = ? LIMIT 1";
+  const userSql = `
+    SELECT * FROM Users 
+    WHERE (email = ? OR phone = ?) AND userPass = ? LIMIT 1
+  `;
+  const psychologistSql = `
+    SELECT * FROM Psychologists 
+    WHERE email = ? AND psyPass = ? LIMIT 1
+  `;
+  const adminSql = `
+    SELECT * FROM Admin 
+    WHERE email = ? AND adminPass = ? LIMIT 1
+  `;
 
-  db.query(userSql, [email, password], (err, userData) => {
+  db.query(userSql, [identifier, identifier, password], (err, userData) => {
     if (err) {
       console.error("Error in user query:", err);
       return res.status(500).json({ Error: "Error in user query" });
     }
 
     if (userData.length > 0) {
-      // Set user session
       req.session.user = {
         userID: userData[0].userID,
         userName: userData[0].userName,
         email: userData[0].email,
       };
 
-      console.log(req.session);
-      // Generate a JWT token
       const token = jwt.sign(
         { userId: userData[0].userID, userEmail: userData[0].email },
         "1234", // Replace with a secure secret key
-        { expiresIn: "1h" } // Set the expiration time
+        { expiresIn: "1h" }
       );
 
-      // Send the token in the response
       return res.json({ status: "Success", UserData: userData[0], token });
     } else {
-      db.query(psychologistSql, [email, password], (err, psychologistData) => {
-        if (err) {
-          console.error("Error in psychologist query:", err);
-          return res.status(500).json({ Error: "Error in psychologist query" });
+      db.query(
+        psychologistSql,
+        [identifier, password],
+        (err, psychologistData) => {
+          if (err) {
+            console.error("Error in psychologist query:", err);
+            return res
+              .status(500)
+              .json({ Error: "Error in psychologist query" });
+          }
+
+          if (psychologistData.length > 0) {
+            req.session.user = {
+              psyID: psychologistData[0].psyID, // Store psyID in session
+              psyName: psychologistData[0].psyName,
+              email: psychologistData[0].email,
+            };
+
+            const token = jwt.sign(
+              {
+                userId: psychologistData[0].psyID,
+                userEmail: psychologistData[0].email,
+              },
+              "1234", // Replace with a secure secret key
+              { expiresIn: "1h" }
+            );
+
+            return res.json({
+              Status: "Success2",
+              UserData: psychologistData[0],
+              token,
+            });
+          } else {
+            db.query(adminSql, [identifier, password], (err, adminData) => {
+              if (err) {
+                console.error("Error in admin query:", err);
+                return res.status(500).json({ Error: "Error in admin query" });
+              }
+
+              if (adminData.length > 0) {
+                req.session.user = {
+                  adminID: adminData[0].adminID,
+                  adminName: adminData[0].adminName,
+                  email: adminData[0].email,
+                };
+
+                return res.json({
+                  Status: "adminSuccess",
+                  UserData: adminData[0],
+                });
+              } else {
+                return res.status(401).json({ Error: "Invalid credentials" });
+              }
+            });
+          }
         }
-
-        if (psychologistData.length > 0) {
-          // Set psychologist session
-          req.session.user = {
-            userID: psychologistData[0].psyID,
-            psyName: psychologistData[0].psyName,
-            email: psychologistData[0].email,
-          };
-
-          return res.json({
-            Status: "Success2",
-            UserData: psychologistData[0],
-          });
-        } else {
-          db.query(adminSql, [email, password], (err, adminData) => {
-            if (err) {
-              console.error("Error in admin query:", err);
-              return res.status(500).json({ Error: "Error in admin query" });
-            }
-
-            if (adminData.length > 0) {
-              // Set admin session
-              req.session.user = {
-                adminID: adminData[0].adminID,
-                adminName: adminData[0].adminName,
-                email: adminData[0].email,
-              };
-
-              return res.json({
-                Status: "adminSuccess",
-                UserData: adminData[0],
-              });
-            } else {
-              return res.status(401).json({ Error: "Invalid credentials" });
-            }
-          });
-        }
-      });
+      );
     }
   });
 });
@@ -214,7 +257,19 @@ app.post("/login", (req, res) => {
 app.get("/login", (req, res) => {
   // Check if there is a user session
   if (req.session.user) {
-    return res.json({ userData: req.session.user });
+    const user = req.session.user;
+    let userData = { ...user };
+
+    // Check if the user is a psychologist and include psyID in the response
+    if (user.psyID && user.psyName) {
+      userData = {
+        ...userData,
+        psyID: user.psyID,
+        psyName: user.psyName,
+      };
+    }
+
+    return res.json({ userData });
   } else {
     return res.status(401).json({ error: "User not logged in" });
   }
@@ -229,24 +284,17 @@ app.post("/check-auth", (req, res) => {
   }
 });
 
-//Logout
 app.post("/logout", (req, res) => {
   try {
     console.log("Logout route triggered");
 
-    // Destroy the session and clear the session cookie
     req.session.destroy((err) => {
       if (err) {
         console.error("Error destroying user session:", err);
         return res.status(500).json({ error: "Internal Server Error" });
       }
 
-      // Clear the session cookie
       res.clearCookie("connect.sid");
-
-      // Expire the session cookie immediately
-      res.cookie("connect.sid", "", { expires: new Date(0) });
-
       console.log("User logout successful");
       res.json({ message: "Logout successful" });
     });
@@ -389,7 +437,6 @@ const io = new SocketIOServer(server, {
 });
 
 // Socket.IO event handling
-// Socket.IO event handling
 io.on("connection", (socket) => {
   console.log("A user connected");
 
@@ -447,6 +494,122 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
+});
+
+//SEARCHBAR
+app.get("/search", (req, res) => {
+  const query = req.query.query;
+
+  if (!query) {
+    return res.status(400).json({ error: "Query parameter is required" });
+  }
+
+  const searchSql = "SELECT id, name FROM Users WHERE name LIKE ?";
+  db.query(searchSql, [`%${query}%`], (err, results) => {
+    if (err) {
+      console.error("Error executing search query:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    res.json(results);
+  });
+});
+
+app.get("/details/:id", (req, res) => {
+  const id = req.params.id;
+
+  const detailSql = "SELECT * FROM Users WHERE id = ?";
+  db.query(detailSql, [id], (err, results) => {
+    if (err) {
+      console.error("Error executing detail query:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (results.length > 0) {
+      res.json(results[0]);
+    } else {
+      res.status(404).json({ error: "Detail not found" });
+    }
+  });
+});
+
+// Define route to handle appointment requests
+app.post("/appointments", (req, res) => {
+  const { userID, psyID, appointmentTime } = req.body;
+
+  // Validate incoming data
+  if (!userID || !psyID || !appointmentTime) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  // Insert appointment into the database
+  const query =
+    "INSERT INTO Appointments (`userID`, `psyID`, `appointmentTime`) VALUES (?, ?, ?)";
+  db.query(query, [userID, psyID, appointmentTime], (err, result) => {
+    if (err) {
+      console.error("Error inserting appointment:", err);
+      return res.status(500).json({ error: "Failed to book appointment" });
+    }
+    console.log("Appointment booked successfully");
+    res.status(201).json({ message: "Appointment booked successfully" });
+  });
+});
+
+// Define route to handle fetching all appointments
+app.get("/appointments", (req, res) => {
+  // Fetch all appointments from the database
+  const query = "SELECT * FROM Appointments";
+  console.log("Executing query:", query);
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error("Error fetching appointments:", err);
+      return res.status(500).json({ error: "Failed to fetch appointments" });
+    }
+    console.log("Appointments:", result);
+    res.status(200).json(result);
+  });
+});
+
+// Assuming you have already set up your Express server and connected to your MySQL database
+
+app.post("/confirmation", (req, res) => {
+  const { userID, link } = req.body;
+
+  // Insert the data into the Confirmation table
+  db.query(
+    "INSERT INTO Confirmation (`userID`, `Link`) VALUES (?, ?)",
+    [userID, link],
+    (error, results, fields) => {
+      if (error) {
+        console.error("Error inserting confirmation:", error);
+        res
+          .status(500)
+          .json({ error: "An error occurred while inserting confirmation" });
+        return;
+      }
+
+      res.status(200).json({ message: "Confirmation inserted successfully" });
+    }
+  );
+});
+
+app.get("/confirmation", (req, res) => {
+  // Get the userID from the logged-in user's session
+  const userID = req.session.user.userID;
+
+  // Fetch appointments from the database for the logged-in user's userID
+  db.query(
+    "SELECT * FROM Confirmation WHERE userID = ?",
+    [userID],
+    (error, results) => {
+      if (error) {
+        console.error("Error fetching appointments:", error);
+        return res.status(500).json({ error: "Failed to fetch appointments" });
+      }
+      console.log("Appointments:", results);
+      res.status(200).json({ userData2: results[0] }); // Assuming userData2 needs to be set to the first result
+    }
+  );
 });
 
 //APP listen and DB CONNECT
